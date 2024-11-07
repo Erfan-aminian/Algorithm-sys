@@ -5,5 +5,5 @@ from django.contrib import messages
 
 
 class HomeView(View):
-    def get(request):
+    def get(self, request):
         return render(request, 'home/home.html')
