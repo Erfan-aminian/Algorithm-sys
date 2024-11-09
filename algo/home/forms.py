@@ -8,35 +8,17 @@ class AlgorithmForm(forms.ModelForm):
         widgets = {
             'option' : forms.RadioSelect
         }
-
-class CountAlgorithmForm(forms.Form):
-    class Meta:
-        model = CountModel
-        fields = ('count',)
-        widgets = {
-            'count': forms.NumberInput(attrs=
-                                       {'class':'form-control', 'placeholder':'Number of processes', 'min':1, 'max':9})
-        }
+class FirstForm(forms.Form):
+    field_count = forms.IntegerField(label='تعداد فیلدها')
 
 
-class FcfsAlgorithmForm(forms.Form):
-    class Meta:
-        model = CountModel
-        fields = ()
-
+class DynamicForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        count = kwargs.pop('count', 1)
-        super(CountAlgorithmForm, self).__init__(*args, **kwargs)
-        for i in range(count):
-            self.fields[f'process_{i + 1}'] = forms.IntegerField(
-                label=f'Execution Time for Process {i + 1}',
-                min_value=1,
-                widget=forms.NumberInput(attrs={
-                    'class': 'form-control',
-                    'placeholder': f'Execution time for process {i + 1}'
-                })
-            )
+        field_count = kwargs.pop('field_count', 0)
+        super(DynamicForm, self).__init__(*args, **kwargs)
 
-
+        # اضافه کردن فیلدها بر اساس تعداد وارد شده در فرم اول
+        for i in range(field_count):
+            self.fields[f'field_{i}'] = forms.CharField(label=f'فیلد {i + 1}')
 
 
