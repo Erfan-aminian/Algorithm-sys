@@ -1,9 +1,56 @@
-{% extends 'base.html' %}
-{% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">send</button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form 1 - Enter Field Count</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/fcfs.css' %}"> <!-- اتصال فایل CSS -->
+</head>
+<body>
 
-{% endblock %}
+<div class="form-container">
+    <h1 class="form-title">form222</h1>
+    <form id="firstForm" method="post">
+        <div class="mb-4">
+            {% csrf_token %}
+            <input type="number" id="fieldCount" name="field_count" class="form-control" placeholder="Enter number">
+            <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // گرفتن فیلد ورودی و دکمه ارسال
+    const fieldCountInput = document.getElementById("fieldCount");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // نمایش دکمه با وارد کردن مقدار در فیلد ورودی
+    fieldCountInput.addEventListener("input", function() {
+        if (fieldCountInput.value > 0) {
+            submitBtn.classList.add("show");
+        } else {
+            submitBtn.classList.remove("show");
+        }
+    });
+
+    // اضافه کردن افکت لرزش به دکمه ارسال در صورت مقدار اشتباه
+    fieldCountInput.addEventListener("blur", function() {
+        if (fieldCountInput.value <= 0) {
+            fieldCountInput.classList.add("shake");
+            setTimeout(() => fieldCountInput.classList.remove("shake"), 500);
+        }
+    });
+
+    // جلوه‌ی تغییر رنگ پس‌زمینه هنگام فوکوس کردن روی فرم
+    fieldCountInput.addEventListener("focus", () => {
+        document.body.classList.add("active-bg");
+    });
+    fieldCountInput.addEventListener("blur", () => {
+        document.body.classList.remove("active-bg");
+    });
+</script>
+
+</body>
+</html>

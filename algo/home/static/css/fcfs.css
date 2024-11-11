@@ -1,0 +1,71 @@
+/* تنظیمات ظاهری بدنه */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.active-bg {
+    background-color: #e0f7fa;
+}
+
+/* تنظیمات فرم */
+.form-container {
+    background: linear-gradient(145deg, #ffffff, #d4d4d4);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+}
+
+.form-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* استایل فیلد ورودی */
+.form-control {
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+}
+
+/* استایل دکمه ارسال */
+.submit-btn {
+    display: none; /* پیش‌فرض نمایش نداره */
+    background: linear-gradient(90deg, #007bff, #00d4ff);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn.show {
+    display: inline-block; /* وقتی فیلد معتبر شد، نمایش داده میشه */
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* انیمیشن لرزش */
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
