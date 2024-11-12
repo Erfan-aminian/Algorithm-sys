@@ -1,71 +1,32 @@
-/* تنظیمات ظاهری بدنه */
+/* Custom CSS */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    background-color: #f4f4f4;
+    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
     font-family: Arial, sans-serif;
-    transition: background-color 0.3s ease;
 }
-
-.active-bg {
-    background-color: #e0f7fa;
-}
-
-/* تنظیمات فرم */
 .form-container {
-    background: linear-gradient(145deg, #ffffff, #d4d4d4);
-    border-radius: 10px;
+    background-color: #fff;
     padding: 30px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
 }
-
-.form-title {
-    font-size: 24px;
+.form-header {
+    text-align: center;
     margin-bottom: 20px;
 }
-
-/* استایل فیلد ورودی */
-.form-control {
+.btn-custom {
+    background-color: #66a6ff;
+    color: #fff;
+    font-weight: bold;
     border: none;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-}
-
-/* استایل دکمه ارسال */
-.submit-btn {
-    display: none; /* پیش‌فرض نمایش نداره */
-    background: linear-gradient(90deg, #007bff, #00d4ff);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
+    width: 100%;
     transition: background-color 0.3s ease;
 }
-
-.submit-btn.show {
-    display: inline-block; /* وقتی فیلد معتبر شد، نمایش داده میشه */
-}
-
-.submit-btn:hover {
-    background-color: #0056b3;
-}
-
-/* انیمیشن لرزش */
-.shake {
-    animation: shake 0.5s;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+.btn-custom:hover {
+    background-color: #577cd1;
 }

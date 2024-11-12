@@ -36,7 +36,7 @@ class FcfsView(View):
                     field_count = first_form.cleaned_data['field_count']
                     # ساخت فرم داینامیک با تعداد فیلد مشخص
                     dynamic_form = DynamicForm(field_count=field_count)
-                    return render(request, 'home/count.html', {'form': dynamic_form})
+                    return render(request, 'home/fcfs.html', {'form': dynamic_form})
 
             # بررسی اینکه آیا فرم دوم ارسال شده
             else:
@@ -47,8 +47,7 @@ class FcfsView(View):
 
         else:
             first_form = FirstForm()
-
-        return render(request, 'home/fcfs.html', {'form': first_form})
+            return render(request, 'home/count.html', {'form': first_form})
 
 
 
