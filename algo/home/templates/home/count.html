@@ -1,61 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FirstForm Page</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Custom CSS */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-            font-family: Arial, sans-serif;
-        }
-        .form-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-        }
-        .form-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .btn-custom {
-            background-color: #66a6ff;
-            color: #fff;
-            font-weight: bold;
-            border: none;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-        .btn-custom:hover {
-            background-color: #577cd1;
-        }
-    </style>
-</head>
-<body>
-    <div class="form-container">
-        <h2 class="form-header">Enter Process Count</h2>
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                {{ form.as_p }}
-            </div>
-            <button type="submit" class="btn btn-custom">Submit</button>
-        </form>
-    </div>
+{% extends 'base.html' %}
+{% block content %}
+<form method="post">
+    <h1>form 1</h1>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">send</button>
+</form>
 
-    <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+
+{% endblock %}

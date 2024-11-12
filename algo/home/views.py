@@ -25,7 +25,7 @@ class HomeView(View):
 class FcfsView(View):
     def get(self, request):
         first_form = FirstForm()
-        return render(request, 'home/fcfs.html', {'form': first_form})
+        return render(request, 'home/count.html', {'form': first_form})
 
     def post(self, request):
         if request.method == 'POST':
@@ -47,7 +47,8 @@ class FcfsView(View):
 
         else:
             first_form = FirstForm()
-            return render(request, 'home/count.html', {'form': first_form})
+
+        return render(request, 'home/count.html', {'form': first_form})
 
 
 
