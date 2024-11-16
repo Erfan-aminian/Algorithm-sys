@@ -23,9 +23,10 @@ class HomeView(View):
             form = AlgorithmForm()
         return render(request, 'home/home.html', {'form': form})
 class FcfsView(View):
+    first_form = FirstForm
+    dynamic_form = DynamicForm
     def get(self, request):
-        first_form = FirstForm()
-        return render(request, 'home/count.html', {'form': first_form})
+        return render(request, 'home/count.html', {'form': self.first_form})
 
     def post(self, request):
         if request.method == 'POST':

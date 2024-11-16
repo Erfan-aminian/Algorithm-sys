@@ -56,16 +56,22 @@
         <div class="form-container">
             <form method="POST">
                 {% csrf_token %}
-
-                <!-- حلقه برای نمایش فیلدها -->
                 {% for field in form %}
-                    <div class="field-spacing">
+                    {% if field_count > 1 %}
+                        <div class="field-spacing">
+                            <div class="mb-3">
+                                {{ field.label_tag }}
+                                {{ field }}
+                            </div>
+                        </div>
+                    {% else %}
                         <div class="mb-3">
                             {{ field.label_tag }}
                             {{ field }}
                         </div>
-                    </div>
+                    {% endif %}
                 {% endfor %}
+
 
                 <button type="submit" class="btn btn-custom">Submit</button>
             </form>
