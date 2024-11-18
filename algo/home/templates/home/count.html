@@ -1,15 +1,7 @@
-<!-- count.html -->
-{% extends 'base.html' %}
-
-{% block content %}
-<div class="container">
-    <div class="form-container">
-        <h2>Enter Number of Processes</h2>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-custom">Next</button>
-        </form>
-    </div>
-</div>
-{% endblock %}
+<!-- home/count.html -->
+<form method="post">
+    {% csrf_token %}
+    <h3>Enter the Number of Processes</h3>
+    {{ form.as_p }}
+    <button type="submit">Next</button>
+</form>

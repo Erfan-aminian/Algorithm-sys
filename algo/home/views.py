@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import AlgorithmForm,FirstForm, DynamicForm
-from .models import AlgorithmModel
+from .forms import AlgorithmForm,FirstForm,create_dynamic_process_formset,DynamicForm
+from .models import AlgorithmModel, DynamicProcessModel
 from django.contrib import messages
 from .fcfs_scheduler import FcfsScheduler  # اضافه کردن کلاس FcfsScheduler
 
@@ -18,7 +18,7 @@ class HomeView(View):
         if form.is_valid():
             selected = form.cleaned_data['option']
             if selected=='1':
-                return redirect('home:fcfs')
+                return redirect('home:count')
             messages.success(request, 'you chioce', 'success')
             form.save()
         else:
@@ -29,48 +29,54 @@ class HomeView(View):
 
 
 
-class FcfsView(View):
+class GetProcessCountView(View):
     def get(self, request):
-        form = FirstForm()
-        return render(request, 'home/count.html', {'form': form})
+        # نمایش فرم اولیه برای دریافت تعداد پردازش‌ها
+        first_form = FirstForm()
+        return render(request, 'home/count.html', {'form': first_form})
 
     def post(self, request):
-        # بررسی اینکه آیا فرم اول ارسال شده
-        if 'field_count' in request.POST:
-            first_form = FirstForm(request.POST)
-            if first_form.is_valid():
-                field_count = first_form.cleaned_data['field_count']
-                print(f"First Form is valid. Field Count: {field_count}")  # نمایش تعداد فیلدها
-                dynamic_form = DynamicForm(field_count=field_count)
-                return render(request, 'home/fcfs.html', {'form': dynamic_form, 'field_count': field_count})
-            else:
-                print('First Form is not valid.')
-                print(first_form.errors)
-        else:
-            # بررسی اینکه آیا فرم دوم ارسال شده
-            field_count = int(request.POST.get('field_count', 0))
-            dynamic_form = DynamicForm(request.POST, field_count=field_count)
+        # پردازش داده‌های `FirstForm`
+        first_form = FirstForm(request.POST)
+        if first_form.is_valid():
+            # دریافت تعداد پردازش‌ها از فیلد `field_count`
+            field_count = first_form.cleaned_data['field_count']
+            # ذخیره تعداد پردازش‌ها در سشن
+            request.session['field_count'] = field_count
+            # هدایت به ویوی داینامیک برای نمایش `Formset`
+            return redirect('home:dynamic')  # باید نام URL ویو `DynamicProcessFormView` باشه
 
-            if dynamic_form.is_valid():
-                print('Dynamic Form is valid.')
-                processes = []
-                for i in range(field_count):
-                    arrival_time = int(request.POST.get(f'arrival_time_{i}'))
-                    burst_time = int(request.POST.get(f'burst_time_{i}'))
-                    processes.append((arrival_time, burst_time))
+        return render(request, 'home/count.html', {'form': first_form})
 
-                print(f"Processes Data: {processes}")  # نمایش داده‌های پردازش‌ها
 
-                # استفاده از کلاس FcfsScheduler برای محاسبه نتایج
-                scheduler = FcfsScheduler(processes)
-                scheduler.calculate()  # محاسبات الگوریتم FCFS
-                results = scheduler.get_results()  # گرفتن نتایج
+class DynamicProcessView(View):
+    def get(self, request):
+        # دریافت تعداد پردازش‌ها از سشن
+        field_count = request.session.get('field_count', 0)
 
-                print(f"Results: {results}")  # نمایش نتایج محاسبات
-                return render(request, 'home/fcfs_result.html', {'results': results})
-            else:
-                print('Dynamic Form is not valid.')
-                print(dynamic_form.errors)
-                return render(request, 'home/fcfs.html', {'form': dynamic_form, 'field_count': field_count})
+        # ایجاد `Formset` داینامیک بر اساس تعداد پردازش‌ها
+        ProcessFormSet = create_dynamic_process_formset(field_count=field_count)
+        formset = ProcessFormSet(queryset=DynamicProcessModel.objects.none())  # برای ایجاد فرم‌های جدید
 
-        return render(request, 'home/count.html', {'form': FirstForm()})
+        return render(request, 'home/fcfs.html', {'formset': formset})
+
+    def post(self, request):
+        # دریافت تعداد پردازش‌ها از سشن
+        field_count = request.session.get('field_count', 0)
+
+        # ایجاد `Formset` داینامیک بر اساس تعداد پردازش‌ها
+        ProcessFormSet = create_dynamic_process_formset(field_count=field_count)
+        formset = ProcessFormSet(request.POST, queryset=DynamicProcessModel.objects.none())
+
+        # پردازش داده‌های ارسالی از فرم‌ست
+        if formset.is_valid():
+            formset.save()  # ذخیره داده‌ها در پایگاه‌داده
+            return redirect('home:home')
+        # ریدایرکت یا نمایش موفقیت
+
+        return render(request, 'home/fcfs.html', {'formset': formset})
+
+
+class Fcfsview(View):
+    def get(self, request):
+        pass

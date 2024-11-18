@@ -1,4 +1,8 @@
+from importlib.util import module_for_loader
+
 from django.db import models
+from django.db.models import IntegerField
+
 
 # Create your models here.
 class AlgorithmModel(models.Model):
@@ -10,17 +14,11 @@ class AlgorithmModel(models.Model):
     ]
     option = models.CharField(max_length=1, choices=OPTION_CHOICES)
 
-class CountModel(models.Model):
-    count = models.PositiveIntegerField(
-        verbose_name='Number of processes',
-        help_text='Number of processes (between 1 and 9)'
-    )
-    created = models.DateTimeField(auto_now_add=True)
-
+class DynamicProcessModel(models.Model):
+    process_name = models.IntegerField()
+    arrival_time = models.IntegerField()
+    burst_time = models.IntegerField()
     def __str__(self):
-        return f"count:{self.count}"
+        return f"process with arrival time:{self.arrival_time} and burst time:{self.burst_time}"
 
-class FcfsProcessModel(models.Model):
-    fcfs_algorithm = models.ForeignKey(CountModel, related_name='fcfs_algorithms', on_delete=models.CASCADE)
-    execution_time = models.PositiveIntegerField(verbose_name='execution time')
 

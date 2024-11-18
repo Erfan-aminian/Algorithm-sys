@@ -1,16 +1,12 @@
-<!-- fcfs.html -->
-{% extends 'base.html' %}
-
-{% block content %}
-<div class="container">
-    <div class="form-container">
-        <h2>Enter Process Details</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="field_count" value="{{ field_count }}">
+<!-- home/dynamic_form.html -->
+<form method="post">
+    {% csrf_token %}
+    <h3>Enter Arrival and Burst Time for Each Process</h3>
+    {{ formset.management_form }}
+    {% for form in formset %}
+        <div class="process-form">
             {{ form.as_p }}
-            <button type="submit" class="btn btn-custom">Calculate</button>
-        </form>
-    </div>
-</div>
-{% endblock %}
+        </div>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>

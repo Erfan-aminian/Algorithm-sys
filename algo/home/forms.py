@@ -1,5 +1,6 @@
 from django import forms
-from .models import AlgorithmModel,CountModel,FcfsProcessModel
+from .models import AlgorithmModel,DynamicProcessModel
+from django.forms import modelformset_factory
 
 class AlgorithmForm(forms.ModelForm):
     class Meta:
@@ -13,13 +14,19 @@ class AlgorithmForm(forms.ModelForm):
 class FirstForm(forms.Form):
     field_count = forms.IntegerField(label='Number of processes', min_value=1)
 
+class DynamicForm(forms.ModelForm):
+        class Meta:
+            model = DynamicProcessModel
+            fields = ('process_name', 'arrival_time', 'burst_time')
 
-class DynamicForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        field_count = kwargs.pop('field_count', 0)
-        super(DynamicForm, self).__init__(*args, **kwargs)
 
-        # اضافه کردن فیلدها بر اساس تعداد وارد شده در فرم اول
-        for i in range(field_count):
-            self.fields[f'arrival_time_{i}'] = forms.IntegerField(label=f'Arrival Time for Process {i + 1}')
-            self.fields[f'burst_time_{i}'] = forms.IntegerField(label=f'Burst Time for Process {i + 1}')
+def create_dynamic_process_formset(field_count=0):
+    ProcessFormSet = modelformset_factory(
+        DynamicProcessModel,
+        form = DynamicForm,
+        extra=field_count
+    )
+    return ProcessFormSet
+
+
+
