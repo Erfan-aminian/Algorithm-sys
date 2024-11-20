@@ -127,3 +127,8 @@ class Fcfsview(View):
         }
 
         return render(request, 'home/fcfs_result.html', context)
+
+
+class RoundRobinView(View):
+    def get(self,request):
+        pass

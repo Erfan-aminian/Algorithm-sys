@@ -6,5 +6,7 @@ urlpatterns = [
     path('count/', views.GetProcessCountView.as_view(), name='count'),
     path('dynamic/', views.DynamicProcessView.as_view(), name='dynamic'),
     path('fcfs/', views.Fcfsview.as_view(), name='fcfs'),
+    path('roundrobin/', views.RoundRobinView.as_view(), name='rr'),
+
 
 ]
