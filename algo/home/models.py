@@ -18,6 +18,8 @@ class DynamicProcessModel(models.Model):
     process_name = models.IntegerField()
     arrival_time = models.IntegerField()
     burst_time = models.IntegerField()
+    priority = models.IntegerField(default=0)
+
     def __str__(self):
         return f"process with arrival time:{self.arrival_time} and burst time:{self.burst_time}"
 
