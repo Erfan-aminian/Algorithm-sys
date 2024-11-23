@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJF Algorithm</title>
+</head>
+<body class="bg-dark text-light">
+    <div class="container mt-5">
+        <h1 class="text-center">SJF Algorithm - Non-Preemptive</h1>
+
+        {% if step == 1 %}
+        <!-- مرحله اول: دریافت تعداد پردازش‌ها -->
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="step" value="1">
+            <button type="submit" class="btn btn-primary">Next</button>
+        </form>
+
+        {% elif step == 2 %}
+        <!-- مرحله دوم: دریافت اطلاعات پردازش‌ها -->
+        <form method="post">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Process Name</th>
+                        <th>Arrival Time</th>
+                        <th>Burst Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in formset %}
+                    <tr>
+                        <td>{{ form.process_name }}</td>
+                        <td>{{ form.arrival_time }}</td>
+                        <td>{{ form.burst_time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="hidden" name="step" value="2">
+            <button type="submit" class="btn btn-success">Calculate SJF</button>
+        </form>
+
+        {% elif step == 3 %}
+        <!-- مرحله سوم: نمایش نتایج الگوریتم SJF -->
+        <h2 class="text-center mt-5">SJF Scheduling Results</h2>
+        <table class="table table-dark table-bordered">
+            <thead>
+                <tr>
+                    <th>Process Name</th>
+                    <th>Arrival Time</th>
+                    <th>Burst Time</th>
+                    <th>Completion Time</th>
+                    <th>Turnaround Time</th>
+                    <th>Waiting Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for process in sorted_processes %}
+                <tr>
+                    <td>{{ process.process_name }}</td>
+                    <td>{{ process.arrival_time }}</td>
+                    <td>{{ process.burst_time }}</td>
+                    <td>{{ process.completion_time }}</td>
+                    <td>{{ process.turnaround_time }}</td>
+                    <td>{{ process.waiting_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'home:sjf' %}" class="btn btn-primary">Start Over</a>
+        {% endif %}
+    </div>
+</body>
+</html>

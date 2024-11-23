@@ -19,6 +19,8 @@ class HomeView(View):
             selected = form.cleaned_data['option']
             if selected=='1':
                 return redirect('home:count')
+            elif selected=='3':
+                return redirect('home:sjf')
             messages.success(request, 'you chioce', 'success')
             form.save()
         else:
@@ -129,6 +131,86 @@ class Fcfsview(View):
         return render(request, 'home/fcfs_result.html', context)
 
 
-class RoundRobinView(View):
-    def get(self,request):
-        pass
+class SjfView(View):
+    template_name = 'home/sjf.html'  # قالب HTML برای نمایش و پردازش
+
+    def get(self, request):
+        # اگر تعداد پردازش‌ها از قبل در سشن ذخیره شده بود، فرم داینامیک رو نمایش بده
+        field_count = request.session.get('field_count', None)
+        if field_count:
+            formset = create_dynamic_process_formset(field_count=field_count)()
+            return render(request, self.template_name, {'formset': formset, 'step': 2})
+
+        # در غیر این صورت، فرم برای دریافت تعداد پردازش‌ها رو نمایش بده
+        form = FirstForm()
+        return render(request, self.template_name, {'form': form, 'step': 1})
+
+    def post(self, request):
+        if 'step' in request.POST and request.POST['step'] == '1':
+            # مرحله اول: دریافت تعداد پردازش‌ها
+            form = FirstForm(request.POST)
+            if form.is_valid():
+                field_count = form.cleaned_data['field_count']
+                request.session['field_count'] = field_count  # ذخیره تعداد پردازش‌ها در سشن
+                return redirect('home:sjf')
+            return render(request, self.template_name, {'form': form, 'step': 1})
+
+        elif 'step' in request.POST and request.POST['step'] == '2':
+            # مرحله دوم: دریافت اطلاعات پردازش‌ها
+            field_count = request.session.get('field_count', 0)
+            formset = create_dynamic_process_formset(field_count)(request.POST)
+            if formset.is_valid():
+                # داده‌ها رو به صورت موقت از فرم داینامیک می‌گیریم، بدون ذخیره در دیتابیس
+                processes = []
+                for form in formset:
+                    if form.cleaned_data:
+                        process_name = form.cleaned_data['process_name']
+                        arrival_time = form.cleaned_data['arrival_time']
+                        burst_time = form.cleaned_data['burst_time']
+                        processes.append(DynamicProcessModel(
+                            process_name=process_name,
+                            arrival_time=arrival_time,
+                            burst_time=burst_time
+                        ))
+
+                # اجرای الگوریتم SJF
+                sorted_processes = self.sjf_non_preemptive(processes)
+
+                # ارسال نتایج به قالب HTML
+                return render(request, self.template_name, {
+                    'formset': None, 'step': 3, 'sorted_processes': sorted_processes
+                })
+
+            return render(request, self.template_name, {'formset': formset, 'step': 2})
+
+    def sjf_non_preemptive(self, processes):
+        # پیاده‌سازی الگوریتم SJF غیر‌پریمتیو
+        processes.sort(key=lambda x: (x.arrival_time, x.burst_time))
+
+        current_time = 0
+        completed_processes = []
+
+        while processes:
+            available_processes = [p for p in processes if p.arrival_time <= current_time]
+            if not available_processes:
+                current_time = processes[0].arrival_time
+                continue
+
+            next_process = min(available_processes, key=lambda x: x.burst_time)
+            processes.remove(next_process)
+
+            current_time += next_process.burst_time
+            completion_time = current_time
+            turnaround_time = completion_time - next_process.arrival_time
+            waiting_time = turnaround_time - next_process.burst_time
+
+            completed_processes.append({
+                'process_name': next_process.process_name,
+                'arrival_time': next_process.arrival_time,
+                'burst_time': next_process.burst_time,
+                'completion_time': completion_time,
+                'turnaround_time': turnaround_time,
+                'waiting_time': waiting_time
+            })
+
+        return completed_processes
