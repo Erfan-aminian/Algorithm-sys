@@ -183,34 +183,3 @@ class SjfView(View):
 
             return render(request, self.template_name, {'formset': formset, 'step': 2})
 
-    def sjf_non_preemptive(self, processes):
-        # پیاده‌سازی الگوریتم SJF غیر‌پریمتیو
-        processes.sort(key=lambda x: (x.arrival_time, x.burst_time))
-
-        current_time = 0
-        completed_processes = []
-
-        while processes:
-            available_processes = [p for p in processes if p.arrival_time <= current_time]
-            if not available_processes:
-                current_time = processes[0].arrival_time
-                continue
-
-            next_process = min(available_processes, key=lambda x: x.burst_time)
-            processes.remove(next_process)
-
-            current_time += next_process.burst_time
-            completion_time = current_time
-            turnaround_time = completion_time - next_process.arrival_time
-            waiting_time = turnaround_time - next_process.burst_time
-
-            completed_processes.append({
-                'process_name': next_process.process_name,
-                'arrival_time': next_process.arrival_time,
-                'burst_time': next_process.burst_time,
-                'completion_time': completion_time,
-                'turnaround_time': turnaround_time,
-                'waiting_time': waiting_time
-            })
-
-        return completed_processes
