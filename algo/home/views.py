@@ -139,37 +139,3 @@ class SjfView(View):
         field_count = request.session.get('field_count', None)
         if field_count:
             formset = create_dynamic_process_formset(field_count=field_count)()
-            return render(request, self.template_name, {'formset': formset, 'step': 2})
-
-        # در غیر این صورت، فرم برای دریافت تعداد پردازش‌ها رو نمایش بده
-        form = FirstForm()
-        return render(request, self.template_name, {'form': form, 'step': 1})
-
-    def post(self, request):
-        if 'step' in request.POST and request.POST['step'] == '1':
-            # مرحله اول: دریافت تعداد پردازش‌ها
-            form = FirstForm(request.POST)
-            if form.is_valid():
-                field_count = form.cleaned_data['field_count']
-                request.session['field_count'] = field_count  # ذخیره تعداد پردازش‌ها در سشن
-                return redirect('home:sjf')
-            return render(request, self.template_name, {'form': form, 'step': 1})
-
-        elif 'step' in request.POST and request.POST['step'] == '2':
-            # مرحله دوم: دریافت اطلاعات پردازش‌ها
-            field_count = request.session.get('field_count', 0)
-            formset = create_dynamic_process_formset(field_count)(request.POST)
-            if formset.is_valid():
-                # داده‌ها رو به صورت موقت از فرم داینامیک می‌گیریم، بدون ذخیره در دیتابیس
-                processes = []
-                for form in formset:
-                    if form.cleaned_data:
-                        process_name = form.cleaned_data['process_name']
-                        arrival_time = form.cleaned_data['arrival_time']
-                        burst_time = form.cleaned_data['burst_time']
-                        processes.append(DynamicProcessModel(
-                            process_name=process_name,
-                            arrival_time=arrival_time,
-                            burst_time=burst_time
-                        )
-
