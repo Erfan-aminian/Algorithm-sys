@@ -171,15 +171,5 @@ class SjfView(View):
                             process_name=process_name,
                             arrival_time=arrival_time,
                             burst_time=burst_time
-                        ))
-
-                # اجرای الگوریتم SJF
-                sorted_processes = self.sjf_non_preemptive(processes)
-
-                # ارسال نتایج به قالب HTML
-                return render(request, self.template_name, {
-                    'formset': None, 'step': 3, 'sorted_processes': sorted_processes
-                })
-
-            return render(request, self.template_name, {'formset': formset, 'step': 2})
+                        )
 
