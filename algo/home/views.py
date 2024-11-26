@@ -134,8 +134,7 @@ class Fcfsview(View):
 class SjfView(View):
     template_name = 'home/sjf.html'  # قالب HTML برای نمایش و پردازش
 
-    def get(self, request):
-        # اگر تعداد پردازش‌ها از قبل در سشن ذخیره شده بود، فرم داینامیک رو نمایش بده
-        field_count = request.session.get('field_count', None)
-        if field_count:
-            formset = create_dynamic_process_formset(field_count=field_count)()
+    def get(self,request):
+        pass
+    def post(self,request):
+        pass
