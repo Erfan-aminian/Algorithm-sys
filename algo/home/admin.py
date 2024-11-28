@@ -3,3 +3,4 @@ from .models import AlgorithmModel, DynamicProcessModel
 
 # Register your models here.
 admin.site.register(AlgorithmModel)
+admin.site.register(DynamicProcessModel)

@@ -3,77 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SJF Algorithm</title>
+    <title>SJF Scheduling Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-dark text-light">
-    <div class="container mt-5">
-        <h1 class="text-center">SJF Algorithm - Non-Preemptive</h1>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">SJF Scheduling Result</h1>
 
-        {% if step == 1 %}
-        <!-- مرحله اول: دریافت تعداد پردازش‌ها -->
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="hidden" name="step" value="1">
-            <button type="submit" class="btn btn-primary">Next</button>
-        </form>
-
-        {% elif step == 2 %}
-        <!-- مرحله دوم: دریافت اطلاعات پردازش‌ها -->
-        <form method="post">
-            {% csrf_token %}
-            {{ formset.management_form }}
-            <table class="table table-dark table-striped">
-                <thead>
-                    <tr>
-                        <th>Process Name</th>
-                        <th>Arrival Time</th>
-                        <th>Burst Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for form in formset %}
-                    <tr>
-                        <td>{{ form.process_name }}</td>
-                        <td>{{ form.arrival_time }}</td>
-                        <td>{{ form.burst_time }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <input type="hidden" name="step" value="2">
-            <button type="submit" class="btn btn-success">Calculate SJF</button>
-        </form>
-
-        {% elif step == 3 %}
-        <!-- مرحله سوم: نمایش نتایج الگوریتم SJF -->
-        <h2 class="text-center mt-5">SJF Scheduling Results</h2>
-        <table class="table table-dark table-bordered">
+        <table class="table table-bordered table-hover table-dark">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Process Name</th>
                     <th>Arrival Time</th>
                     <th>Burst Time</th>
-                    <th>Completion Time</th>
-                    <th>Turnaround Time</th>
                     <th>Waiting Time</th>
+                    <th>Turnaround Time</th>
                 </tr>
             </thead>
             <tbody>
-                {% for process in sorted_processes %}
+                {% for process in process_data %}
                 <tr>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ process.process_name }}</td>
                     <td>{{ process.arrival_time }}</td>
                     <td>{{ process.burst_time }}</td>
-                    <td>{{ process.completion_time }}</td>
-                    <td>{{ process.turnaround_time }}</td>
                     <td>{{ process.waiting_time }}</td>
+                    <td>{{ process.turnaround_time }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'home:sjf' %}" class="btn btn-primary">Start Over</a>
-        {% endif %}
+
+        <div class="mt-4">
+            <h3>Average Waiting Time: {{ avg_waiting_time|floatformat:2 }}</h3>
+            <h3>Average Turnaround Time: {{ avg_turnaround_time|floatformat:2 }}</h3>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-primary">Back to Home</a>
+        </div>
     </div>
 </body>
 </html>
