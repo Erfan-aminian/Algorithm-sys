@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from django.http import JsonResponse
 from .forms import AlgorithmForm,FirstForm,create_dynamic_process_formset,DynamicForm
 from .models import AlgorithmModel, DynamicProcessModel
 from django.contrib import messages
-from .fcfs_scheduler import FcfsScheduler  # اضافه کردن کلاس FcfsScheduler
+from .algorithm import SJFAlgorithm
 
 from django.http import HttpResponse
 # Create your views here.
@@ -20,7 +21,7 @@ class HomeView(View):
             if selected=='1':
                 return redirect('home:count')
             elif selected=='3':
-                return redirect('home:count')
+                return redirect('home:sjf')
             messages.success(request, 'you chioce', 'success')
             form.save()
         else:
@@ -134,82 +135,18 @@ class Fcfsview(View):
 
 
 class SjfView(View):
-    def get(self, request):
-        # دریافت تعداد پردازش‌ها از سشن یا درخواست (در صورت نیاز می‌توان تغییر داد)
-        process_count = request.session.get('process_count', None)
+    def get(self, request, *args, **kwargs):
+        # دریافت داده‌ها از پایگاه‌داده
+        processes = list(
+            DynamicProcessModel.objects.values("id", "arrival_time", "burst_time")
+        )
 
-        if process_count is None:
-            return HttpResponse("Error: Number of processes not specified.", status=400)
+        # اجرای الگوریتم
+        sjf = SJFAlgorithm(processes)
+        sjf.execute()
+        results = sjf.get_results()
 
-        # دریافت فقط تعداد مشخص‌شده از پردازش‌ها
-        processes = list(DynamicProcessModel.objects.all().order_by('arrival_time')[:process_count])
+        # بازگشت نتایج به صورت JSON
+        return render(request, 'home/sjf.html', {'results': results})
 
-        if processes:
-            waiting_times = []
-            turnaround_times = []
-
-            current_time = 0
-            total_waiting_time = 0
-            total_turnaround_time = 0
-
-            completed_processes = []
-            process_data = []
-
-            while len(completed_processes) < len(processes):
-                # انتخاب پردازش‌های قابل اجرا (زمان ورود <= زمان فعلی)
-                available_processes = [
-                    process for process in processes if
-                    process.arrival_time <= current_time and process not in completed_processes
-                ]
-
-                if available_processes:
-                    # انتخاب پردازشی که زمان اجرای کوتاه‌تری داره
-                    next_process = min(available_processes, key=lambda p: p.burst_time)
-
-                    # محاسبه زمان انتظار
-                    waiting_time = current_time - next_process.arrival_time
-                    waiting_times.append(waiting_time)
-
-                    # به‌روزرسانی زمان فعلی
-                    current_time += next_process.burst_time
-
-                    # محاسبه زمان بازگشت
-                    turnaround_time = current_time - next_process.arrival_time
-                    turnaround_times.append(turnaround_time)
-
-                    # به‌روزرسانی مقادیر کل
-                    total_waiting_time += waiting_time
-                    total_turnaround_time += turnaround_time
-
-                    # اضافه کردن به لیست پردازش‌های کامل‌شده
-                    completed_processes.append(next_process)
-
-                    # اضافه کردن داده‌ها به لیست process_data
-                    process_data.append({
-                        'process_name': next_process.process_name,
-                        'arrival_time': next_process.arrival_time,
-                        'burst_time': next_process.burst_time,
-                        'waiting_time': waiting_time,
-                        'turnaround_time': turnaround_time,
-                    })
-                else:
-                    # اگر پردازشی برای اجرا وجود نداره، زمان فعلی رو به اولین پردازش بعدی منتقل کن
-                    current_time = min(
-                        process.arrival_time for process in processes if process not in completed_processes
-                    )
-
-            avg_waiting_time = total_waiting_time / len(processes)
-            avg_turnaround_time = total_turnaround_time / len(processes)
-        else:
-            avg_waiting_time = 0
-            avg_turnaround_time = 0
-            process_data = []
-
-        context = {
-            'process_data': process_data,  # ارسال لیست process_data به قالب
-            'avg_waiting_time': avg_waiting_time,
-            'avg_turnaround_time': avg_turnaround_time
-        }
-
-        return render(request, 'home/sjf.html', context)
 
