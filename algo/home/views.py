@@ -18,10 +18,14 @@ class HomeView(View):
         form = AlgorithmForm(request.POST)
         if form.is_valid():
             selected = form.cleaned_data['option']
-            if selected=='1':
+            if selected == '1':
                 return redirect('home:count')
-            elif selected=='3':
+            elif selected == '2':
+                return redirect('home:rr')
+            elif selected == '3':
                 return redirect('home:sjf')
+            elif selected == '4':
+                return redirect('home:srt')
             messages.success(request, 'you chioce', 'success')
             form.save()
         else:
@@ -66,6 +70,7 @@ class DynamicProcessView(View):
         return render(request, 'home/fcfs.html', {'formset': formset})
 
     def post(self, request):
+        DynamicProcessModel.objects.all().delete()
         # دریافت تعداد پردازش‌ها از سشن
         field_count = request.session.get('field_count', 0)
 
@@ -76,7 +81,7 @@ class DynamicProcessView(View):
         # پردازش داده‌های ارسالی از فرم‌ست
         if formset.is_valid():
             formset.save()  # ذخیره داده‌ها در پایگاه‌داده
-            return redirect('home:sjf')
+            return redirect('home:home')
         # ریدایرکت یا نمایش موفقیت
 
         return render(request, 'home/fcfs.html', {'formset': formset})

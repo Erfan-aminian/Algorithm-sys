@@ -13,7 +13,7 @@
 
 {% block content %}
 <div class="form-container">
-    <h2 class="form-title"><i class="fas fa-check-circle"></i>انتخاب گزینه</h2>
+    <h2 class="form-title"><i class="fas fa-check-circle"></i> انتخاب گزینه</h2>
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -29,6 +29,17 @@
         </div>
         <button type="submit" class="btn btn-custom">ارسال</button>
     </form>
+</div>
+
+<!-- بخش جداگانه برای دکمه و کپشن -->
+<div class="form-container mt-4">
+    <form action="{% url 'home:count' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-custom">ارسال مقادیر</button>
+    </form>
+    <p class="caption-text mt-2" style="font-size: 14px; color: #6c757d;">
+        لطفاً قبل از انتخاب الگوریتم، مقادیر را ارسال کنید.
+    </p>
 </div>
 
 <!-- Bootstrap JS and dependencies -->
