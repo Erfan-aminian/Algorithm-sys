@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from .forms import AlgorithmForm,FirstForm,create_dynamic_process_formset,DynamicForm
 from .models import AlgorithmModel, DynamicProcessModel
 from django.contrib import messages
-from .algorithm import SJFAlgorithm
+from .algorithm import SJFAlgorithm, SRTAlgorithm
 
 from django.http import HttpResponse
 # Create your views here.
@@ -154,4 +154,29 @@ class SjfView(View):
         # بازگشت نتایج به صورت JSON
         return render(request, 'home/sjf.html', {'results': results})
 
+class SrtView(View):
+    def get(self, request, *args, **kwargs):
+        processes = []
+        dynamic_processes = DynamicProcessModel.objects.all()  # دریافت تمام رکوردها
 
+        # چاپ رکوردهای دریافت شده از پایگاه داده
+        print("Dynamic Processes from DB:", dynamic_processes)
+
+        for process in dynamic_processes:
+            processes.append({
+                'process_name': process.process_name,
+                'arrival_time': process.arrival_time,
+                'burst_time': process.burst_time
+            })
+
+        # چاپ داده‌ها که به الگوریتم ارسال می‌شوند
+        print("Processes sent to SRT algorithm:", processes)
+
+        # اجرای الگوریتم SRT
+        srt_algo = SRTAlgorithm(processes)
+        result = srt_algo.execute()
+
+        # چاپ نتایج
+        print("SRT Algorithm Result:", result)
+
+        return render(request, 'home/srt.html', {'result': result})

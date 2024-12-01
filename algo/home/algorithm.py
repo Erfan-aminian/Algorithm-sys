@@ -66,3 +66,67 @@ class SJFAlgorithm:
         :return: List of scheduled processes with waiting and turnaround times.
         """
         return self.scheduled_processes
+
+
+class SRTAlgorithm:
+    def __init__(self, processes):
+        """
+        :param processes: لیستی از دیکشنری‌ها شامل اطلاعات هر فرآیند
+                         [{'process_name': 'P1', 'arrival_time': 0, 'burst_time': 5},
+                          {'process_name': 'P2', 'arrival_time': 1, 'burst_time': 3}, ...]
+        """
+        self.processes = sorted(processes, key=lambda x: x['arrival_time'])
+        self.result = []
+
+    def execute(self):
+        """
+        اجرای الگوریتم SRT
+        :return: لیستی از دیکشنری‌ها شامل زمان‌های اجرا، انتظار و تکمیل برای هر فرآیند
+        """
+        processes = self.processes
+        n = len(processes)
+        remaining_time = [p['burst_time'] for p in processes]
+        complete = 0
+        time = 0
+        waiting_time = [0] * n
+        turnaround_time = [0] * n
+        completed = [False] * n
+
+        while complete < n:
+            # پیدا کردن فرآیند با کمترین زمان باقی‌مانده
+            idx = -1
+            min_remaining_time = float('inf')
+
+            for i in range(n):
+                if (not completed[i]) and (processes[i]['arrival_time'] <= time) and (
+                        remaining_time[i] < min_remaining_time):
+                    min_remaining_time = remaining_time[i]
+                    idx = i
+
+            if idx == -1:
+                time += 1  # هیچ فرآیندی آماده نیست، بنابراین زمان را افزایش می‌دهیم
+                continue
+
+            # کاهش زمان باقی‌مانده فرآیند انتخاب شده
+            remaining_time[idx] -= 1
+
+            if remaining_time[idx] == 0:  # اگر فرآیند تمام شد
+                completed[idx] = True
+                complete += 1
+                finish_time = time + 1
+                waiting_time[idx] = finish_time - processes[idx]['arrival_time'] - processes[idx]['burst_time']
+                turnaround_time[idx] = finish_time - processes[idx]['arrival_time']
+
+            time += 1
+
+        # محاسبه زمان‌های تکمیل و انتظار برای هر فرآیند
+        for i in range(n):
+            self.result.append({
+                'process_name': processes[i]['process_name'],
+                'waiting_time': waiting_time[i],
+                'turnaround_time': turnaround_time[i],
+                'completion_time': waiting_time[i] + turnaround_time[i] + processes[i]['arrival_time']
+            })
+
+        return self.result
+

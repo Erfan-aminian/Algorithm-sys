@@ -17,7 +17,7 @@ class FirstForm(forms.Form):
 class DynamicForm(forms.ModelForm):
         class Meta:
             model = DynamicProcessModel
-            fields = ('process_name', 'arrival_time', 'burst_time')
+            fields = ('process_name', 'arrival_time', 'burst_time', 'priority')
 
 
 def create_dynamic_process_formset(field_count=0):
