@@ -159,8 +159,7 @@ class SrtView(View):
         processes = []
         dynamic_processes = DynamicProcessModel.objects.all()  # دریافت تمام رکوردها
 
-        # چاپ رکوردهای دریافت شده از پایگاه داده
-        print("Dynamic Processes from DB:", dynamic_processes)
+
 
         for process in dynamic_processes:
             processes.append({
@@ -168,15 +167,10 @@ class SrtView(View):
                 'arrival_time': process.arrival_time,
                 'burst_time': process.burst_time
             })
-
-        # چاپ داده‌ها که به الگوریتم ارسال می‌شوند
-        print("Processes sent to SRT algorithm:", processes)
-
         # اجرای الگوریتم SRT
         srt_algo = SRTAlgorithm(processes)
         result = srt_algo.execute()
 
         # چاپ نتایج
-        print("SRT Algorithm Result:", result)
 
         return render(request, 'home/srt.html', {'result': result})
