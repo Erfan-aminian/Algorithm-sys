@@ -159,8 +159,6 @@ class SrtView(View):
         processes = []
         dynamic_processes = DynamicProcessModel.objects.all()  # دریافت تمام رکوردها
 
-
-
         for process in dynamic_processes:
             processes.append({
                 'process_name': process.process_name,
@@ -170,7 +168,5 @@ class SrtView(View):
         # اجرای الگوریتم SRT
         srt_algo = SRTAlgorithm(processes)
         result = srt_algo.execute()
-
-        # چاپ نتایج
 
         return render(request, 'home/srt.html', {'result': result})
