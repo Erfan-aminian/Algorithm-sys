@@ -1,32 +1,66 @@
-/* Custom CSS */
 body {
+    background-color: #f0f2f5;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-    font-family: Arial, sans-serif;
+    margin: 0;
+    font-family: 'Vazir', sans-serif; /* فونت فارسی برای زیبایی */
 }
+
 .form-container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 100%;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     max-width: 400px;
+    width: 100%;
 }
-.form-header {
-    text-align: center;
-    margin-bottom: 20px;
-}
-.btn-custom {
-    background-color: #66a6ff;
-    color: #fff;
+
+.form-title {
+    font-size: 24px;
     font-weight: bold;
+    color: #495057;
+    text-align: center;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.form-title i {
+    color: #007bff;
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+.form-check-label {
+    font-size: 18px;
+    color: #495057;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.form-check-input:checked + .form-check-label {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.form-check {
+    margin-bottom: 15px;
+}
+
+.btn-custom {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 8px;
     border: none;
     width: 100%;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
 }
+
 .btn-custom:hover {
-    background-color: #577cd1;
+    background-color: #0056b3;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
