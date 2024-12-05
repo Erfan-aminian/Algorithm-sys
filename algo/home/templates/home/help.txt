@@ -1,0 +1,7 @@
+<h3>Enter Arrival and Burst Time for Each Process</h3>
+    {{ formset.management_form }}
+    {% for form in formset %}
+        <div class="process-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
