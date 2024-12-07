@@ -130,3 +130,64 @@ class SRTAlgorithm:
 
         return self.result
 
+
+# algorithms.py
+from collections import deque
+
+
+class RoundRobin:
+    def __init__(self, processes, quantum):
+        """
+        :param processes: لیستی از پردازش‌ها که شامل process_name, arrival_time, burst_time, priority, quantum است
+        :param quantum: زمان کوانتوم که در الگوریتم استفاده می‌شود
+        """
+        self.processes = processes
+        self.quantum = quantum
+
+    def execute(self):
+        """
+        اجرای الگوریتم Round Robin
+        :return: نتایج الگوریتم شامل زمان ورود، زمان پایان، زمان اجرای پردازش‌ها و زمان پاسخ
+        """
+        queue = []
+        for process in self.processes:
+            queue.append(process)
+
+        time = 0
+        result = []
+        waiting_times = {}
+        turn_around_times = {}
+        completed = []
+
+        while queue:
+            process = queue.pop(0)
+            process_name, arrival_time, burst_time, priority, quantum = process
+            remaining_time = burst_time
+
+            if remaining_time > self.quantum:
+                # پردازش برای زمان کوانتوم کامل اجرا می‌شود
+                time += self.quantum
+                remaining_time -= self.quantum
+                # پردازش دوباره به صف اضافه می‌شود
+                queue.append((process_name, arrival_time, remaining_time, priority, self.quantum))
+            else:
+                # پردازش تا پایان تمام می‌شود
+                time += remaining_time
+                waiting_time = time - arrival_time - burst_time
+                turn_around_time = time - arrival_time
+                waiting_times[process_name] = waiting_time
+                turn_around_times[process_name] = turn_around_time
+                completed.append(process_name)
+                remaining_time = 0
+
+            result.append({
+                'process_name': process_name,
+                'arrival_time': arrival_time,
+                'burst_time': burst_time,
+                'waiting_time': waiting_times.get(process_name, 0),
+                'turn_around_time': turn_around_times.get(process_name, 0),
+                'completion_time': time
+            })
+
+        return result
+

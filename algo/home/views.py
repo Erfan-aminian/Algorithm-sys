@@ -170,3 +170,40 @@ class SrtView(View):
         result = srt_algo.execute()
 
         return render(request, 'home/srt.html', {'result': result})
+
+
+class RoundRobinView(View):
+    def get(self, request, *args, **kwargs):
+        form = AlgorithmForm()
+        return render(request, 'home/rr.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = AlgorithmForm(request.POST)
+        if form.is_valid():
+            option = form.cleaned_data['option']
+
+            # دریافت پردازش‌ها از مدل
+            processes = DynamicProcessModel.objects.all().values('process_name', 'arrival_time', 'burst_time',
+                                                                 'priority', 'quantum')
+
+            # مقدار پیش‌فرض برای زمان کوانتوم
+            quantum = 5  # مقدار پیش‌فرض زمان کوانتوم
+            if option == 'RR':
+                # زمانی که الگوریتم Round Robin انتخاب شد، زمان کوانتوم را از فرم دریافت می‌کنیم
+                quantum = int(request.POST.get('quantum', 5))  # دریافت زمان کوانتوم از فرم
+
+            # ایجاد لیست پردازش‌ها برای ارسال به الگوریتم
+            process_list = [
+                (process['process_name'], process['arrival_time'], process['burst_time'], process['priority'],
+                 process['quantum'])
+                for process in processes
+            ]
+
+            # ایجاد شی از کلاس RoundRobin و اجرای الگوریتم
+            if option == 'RR':
+                round_robin_algorithm = RoundRobin(process_list, quantum)
+                results = round_robin_algorithm.execute()
+
+            return render(request, 'home/round_robin_results.html', {'results': results, 'form': form})
+
+        return render(request, 'home/rr.html.html', {'form': form})

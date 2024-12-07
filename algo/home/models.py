@@ -19,6 +19,7 @@ class DynamicProcessModel(models.Model):
     arrival_time = models.PositiveSmallIntegerField()
     burst_time = models.PositiveSmallIntegerField()
     priority = models.PositiveIntegerField(default=0)
+    quantum = models.PositiveSmallIntegerField(default=5)
 
     def __str__(self):
         return f"process with arrival time:{self.arrival_time} and burst time:{self.burst_time}"

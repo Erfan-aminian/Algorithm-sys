@@ -1,0 +1,29 @@
+<!-- round_robin_results.html -->
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Round Robin Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Process Name</th>
+                <th>Arrival Time</th>
+                <th>Burst Time</th>
+                <th>Waiting Time</th>
+                <th>Turn Around Time</th>
+                <th>Completion Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result.process_name }}</td>
+                <td>{{ result.arrival_time }}</td>
+                <td>{{ result.burst_time }}</td>
+                <td>{{ result.waiting_time }}</td>
+                <td>{{ result.turn_around_time }}</td>
+                <td>{{ result.completion_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
