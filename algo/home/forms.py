@@ -28,13 +28,7 @@ class FirstForm(forms.Form):
 class DynamicForm(forms.ModelForm):
     class Meta:
         model = DynamicProcessModel
-        fields = ('process_name', 'arrival_time', 'burst_time')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # اگر الگوریتم Round Robin انتخاب شده باشد، فیلد quantum را نشان بده
-        if 'quantum' in kwargs.get('initial', {}):
-            self.fields['quantum'] = forms.IntegerField(min_value=1, required=True, label='Quantum Time', initial=5)
+        fields = ('process_name', 'arrival_time', 'burst_time', 'quantum')
 
 
 def create_dynamic_process_formset(field_count=0):

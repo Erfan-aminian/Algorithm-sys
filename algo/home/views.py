@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from .forms import AlgorithmForm,FirstForm,create_dynamic_process_formset,DynamicForm
 from .models import AlgorithmModel, DynamicProcessModel
 from django.contrib import messages
-from .algorithm import SJFAlgorithm, SRTAlgorithm
+from .algorithm import SJFAlgorithm, SRTAlgorithm, RoundRobin
 
 from django.http import HttpResponse
 # Create your views here.
@@ -173,37 +173,33 @@ class SrtView(View):
 
 
 class RoundRobinView(View):
-    def get(self, request, *args, **kwargs):
-        form = AlgorithmForm()
-        return render(request, 'home/rr.html', {'form': form})
+    def get(self, request):
+        field_count = request.GET.get('field_count', 0)
+        formset = create_dynamic_process_formset(field_count=int(field_count))
+        return render(request, 'home/rr.html', {'formset': formset})
 
-    def post(self, request, *args, **kwargs):
-        form = AlgorithmForm(request.POST)
-        if form.is_valid():
-            option = form.cleaned_data['option']
+    def post(self, request):
+        time_quantum = int(request.POST.get('time_quantum', 2))  # مقدار کوانتوم زمانی
+        formset = create_dynamic_process_formset()(request.POST)
 
-            # دریافت پردازش‌ها از مدل
-            processes = DynamicProcessModel.objects.all().values('process_name', 'arrival_time', 'burst_time',
-                                                                 'priority', 'quantum')
+        if formset.is_valid():
+            processes = []
+            for form in formset:
+                process = form.save(commit=False)
+                processes.append({
+                    'process_name': process.process_name,
+                    'arrival_time': process.arrival_time,
+                    'burst_time': process.burst_time
+                })
+            # اجرای الگوریتم
+            rr = RoundRobin(processes, time_quantum)
+            schedule = rr.execute()
 
-            # مقدار پیش‌فرض برای زمان کوانتوم
-            quantum = 5  # مقدار پیش‌فرض زمان کوانتوم
-            if option == 'RR':
-                # زمانی که الگوریتم Round Robin انتخاب شد، زمان کوانتوم را از فرم دریافت می‌کنیم
-                quantum = int(request.POST.get('quantum', 5))  # دریافت زمان کوانتوم از فرم
+            return render(request, 'home/rr.html', {
+                'formset': formset,
+                'schedule': schedule,
+                'total_time': rr.total_time,
+                'time_quantum': time_quantum
+            })
 
-            # ایجاد لیست پردازش‌ها برای ارسال به الگوریتم
-            process_list = [
-                (process['process_name'], process['arrival_time'], process['burst_time'], process['priority'],
-                 process['quantum'])
-                for process in processes
-            ]
-
-            # ایجاد شی از کلاس RoundRobin و اجرای الگوریتم
-            if option == 'RR':
-                round_robin_algorithm = RoundRobin(process_list, quantum)
-                results = round_robin_algorithm.execute()
-
-            return render(request, 'home/round_robin_results.html', {'results': results, 'form': form})
-
-        return render(request, 'home/rr.html.html', {'form': form})
+        return render(request, 'home/rr.html', {'formset': formset})
