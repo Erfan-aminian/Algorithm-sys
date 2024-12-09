@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from .forms import AlgorithmForm,FirstForm,create_dynamic_process_formset,DynamicForm
 from .models import AlgorithmModel, DynamicProcessModel
 from django.contrib import messages
-from .algorithm import SJFAlgorithm, SRTAlgorithm, RoundRobin
+from .algorithm import SJFAlgorithm, SRTAlgorithm, RRAlgorithm
 
 from django.http import HttpResponse
 # Create your views here.
@@ -173,33 +173,27 @@ class SrtView(View):
 
 
 class RoundRobinView(View):
-    def get(self, request):
-        field_count = request.GET.get('field_count', 0)
-        formset = create_dynamic_process_formset(field_count=int(field_count))
-        return render(request, 'home/rr.html', {'formset': formset})
+    def get(self, request, *args, **kwargs):
+        processes = []
+        dynamic_processes = DynamicProcessModel.objects.all()
 
-    def post(self, request):
-        time_quantum = int(request.POST.get('time_quantum', 2))  # مقدار کوانتوم زمانی
-        formset = create_dynamic_process_formset()(request.POST)
+        if not dynamic_processes.exists():
+            return render(request, 'home/rr.html', {'result': [], 'error': 'No processes found in the database.'})
 
-        if formset.is_valid():
-            processes = []
-            for form in formset:
-                process = form.save(commit=False)
-                processes.append({
-                    'process_name': process.process_name,
-                    'arrival_time': process.arrival_time,
-                    'burst_time': process.burst_time
-                })
-            # اجرای الگوریتم
-            rr = RoundRobin(processes, time_quantum)
-            schedule = rr.execute()
+        # دریافت Time Quantum از اولین فرآیند
+        time_quantum = dynamic_processes.first().quantum
 
-            return render(request, 'home/rr.html', {
-                'formset': formset,
-                'schedule': schedule,
-                'total_time': rr.total_time,
-                'time_quantum': time_quantum
+        # جمع‌آوری داده‌های فرآیندها
+        for process in dynamic_processes:
+            processes.append({
+                'process_name': process.process_name,
+                'arrival_time': process.arrival_time,
+                'burst_time': process.burst_time
             })
 
-        return render(request, 'home/rr.html', {'formset': formset})
+        # اجرای الگوریتم RR
+        rr_algo = RRAlgorithm(processes, time_quantum)
+        result = rr_algo.execute()
+
+        # ارسال نتایج به قالب
+        return render(request, 'home/rr.html', {'result': result, 'time_quantum': time_quantum})
