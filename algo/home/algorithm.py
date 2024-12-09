@@ -135,46 +135,61 @@ class SRTAlgorithm:
 from collections import deque
 
 
-class RoundRobin:
+class RRAlgorithm:
     def __init__(self, processes, time_quantum):
         """
-        :param processes: لیستی از دیکشنری‌ها که شامل اطلاعات پردازش‌ها است.
-        :param time_quantum: کوانتوم زمانی (Time Quantum) برای الگوریتم.
+        :param processes: لیستی از دیکشنری‌های فرآیندها شامل نام، زمان ورود و زمان اجرای هر فرآیند
+        :param time_quantum: زمان کوانتوم برای الگوریتم Round Robin
         """
-        self.processes = processes  # [{"process_name": "P1", "arrival_time": 0, "burst_time": 4}, ...]
+        self.processes = processes
         self.time_quantum = time_quantum
-        self.schedule = []
-        self.total_time = 0
 
     def execute(self):
+        """
+        اجرای الگوریتم Round Robin و بازگشت نتایج
+        :return: لیستی از زمان‌های انتظار و زمان‌های تکمیل برای هر فرآیند
+        """
+        n = len(self.processes)
         queue = []
-        time = 0
-        processes = sorted(self.processes, key=lambda x: x['arrival_time'])
+        current_time = 0
+        results = []
 
-        while processes or queue:
-            # اضافه کردن پردازش‌های جدید به صف
-            while processes and processes[0]['arrival_time'] <= time:
-                queue.append(processes.pop(0))
+        # کپی burst_time برای پردازش
+        for process in self.processes:
+            process['remaining_time'] = process['burst_time']
+
+        # مرتب‌سازی بر اساس زمان ورود
+        self.processes.sort(key=lambda x: x['arrival_time'])
+
+        while self.processes or queue:
+            # اضافه کردن فرآیندها به صف اگر زمان ورودشان رسیده باشد
+            while self.processes and self.processes[0]['arrival_time'] <= current_time:
+                queue.append(self.processes.pop(0))
 
             if queue:
-                # پردازش اول صف
+                # فرآیند از صف انتخاب می‌شود
                 process = queue.pop(0)
-                exec_time = min(process['burst_time'], self.time_quantum)
-                process['burst_time'] -= exec_time
-                self.schedule.append({
-                    'process_name': process['process_name'],
-                    'start_time': time,
-                    'end_time': time + exec_time
-                })
-                time += exec_time
 
-                # اضافه کردن پردازش دوباره به صف اگر کارش تمام نشده
-                if process['burst_time'] > 0:
+                # اجرای فرآیند برای زمان کوانتوم
+                exec_time = min(self.time_quantum, process['remaining_time'])
+                current_time += exec_time
+                process['remaining_time'] -= exec_time
+
+                # اگر فرآیند تمام شده باشد
+                if process['remaining_time'] == 0:
+                    results.append({
+                        'process_name': process['process_name'],
+                        'completion_time': current_time,
+                        'turnaround_time': current_time - process['arrival_time'],
+                        'waiting_time': (current_time - process['arrival_time']) - process['burst_time']
+                    })
+                else:
+                    # بازگشت فرآیند به انتهای صف
                     queue.append(process)
             else:
-                # اگر صف خالی باشد و پردازش بعدی هنوز نرسیده
-                time += 1
+                # اگر صف خالی باشد و فرآیندهای بیشتری در راه باشند
+                current_time += 1
 
-        self.total_time = time
-        return self.schedule
+        return results
+
 
