@@ -22,7 +22,7 @@ class AlgorithmForm(forms.ModelForm):
 
 
 class FirstForm(forms.Form):
-    field_count = forms.IntegerField(label='Number of processes', min_value=1)
+    field_count = forms.IntegerField(label='Number of processes', min_value=1, max_value=10)
 
 
 class DynamicForm(forms.ModelForm):
