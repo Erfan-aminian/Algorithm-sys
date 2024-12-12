@@ -18,9 +18,11 @@ class FirstForm(forms.Form):
 
 
 class DynamicForm(forms.ModelForm):
+
+
     class Meta:
         model = DynamicProcessModel
-        fields = ('process_name', 'arrival_time', 'burst_time', 'quantum')
+        fields = ('process_name', 'arrival_time', 'burst_time')
 
 
 
