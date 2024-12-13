@@ -1,0 +1,108 @@
+/* فایل sjf.css */
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa; /* رنگ پس‌زمینه روشن */
+    color: #212529; /* رنگ متن */
+    font-family: 'Arial', sans-serif;
+}
+
+.result-container {
+    background-color: #ffffff; /* پس‌زمینه کارت سفید */
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+.result-container h1 {
+    color: #007bff; /* رنگ آبی */
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #007bff; /* پس‌زمینه آبی برای عناوین جدول */
+    color: #ffffff; /* رنگ متن سفید */
+    font-weight: bold;
+}
+
+.table thead th {
+    font-size: 16px;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1; /* افکت هاور */
+    transition: background-color 0.3s ease;
+}
+
+.table tbody td {
+    color: #212529; /* متن داخل جدول */
+    font-size: 14px;
+}
+
+.btn-custom {
+    background-color: #007bff; /* رنگ دکمه */
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3; /* تغییر رنگ هاور دکمه */
+    color: #ffffff;
+}
+/* رنگ تیترهای ستون‌ها (Process ID و سایر ستون‌ها) */
+.table thead th {
+    background-color: #007bff; /* پس‌زمینه آبی */
+    color: #ffffff; /* رنگ متن سفید */
+    font-size: 16px;
+    text-align: center;
+}
+
+/* استایل برای ستون‌های خاص */
+.table tbody td:nth-child(1) { /* ستون Process ID */
+    color: #ff5722; /* نارنجی */
+    font-weight: bold;
+    text-align: center;
+}
+
+.table tbody td:nth-child(2) { /* ستون Start Time */
+    color: #2196f3; /* آبی روشن */
+    text-align: center;
+}
+
+.table tbody td:nth-child(3) { /* ستون Finish Time */
+    color: #4caf50; /* سبز */
+    text-align: center;
+}
+
+.table tbody td:nth-child(4) { /* ستون Waiting Time */
+    color: #ff9800; /* زرد-نارنجی */
+    text-align: center;
+}
+
+.table tbody td:nth-child(5) { /* ستون Turnaround Time */
+    color: #9c27b0; /* بنفش */
+    text-align: center;
+}
