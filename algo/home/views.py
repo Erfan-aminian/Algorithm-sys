@@ -67,7 +67,7 @@ class DynamicProcessView(View):
         ProcessFormSet = create_dynamic_process_formset(field_count=field_count)
         formset = ProcessFormSet(queryset=DynamicProcessModel.objects.none())  # برای ایجاد فرم‌های جدید
 
-        return render(request, 'home/fcfs.html', {'formset': formset})
+        return render(request, 'home/dynamic.html', {'formset': formset})
 
     def post(self, request):
         DynamicProcessModel.objects.all().delete()
@@ -84,7 +84,7 @@ class DynamicProcessView(View):
             return redirect('home:home')
         # ریدایرکت یا نمایش موفقیت
 
-        return render(request, 'home/fcfs.html', {'formset': formset})
+        return render(request, 'home/dynamic.html', {'formset': formset})
 
 
 class Fcfsview(View):
