@@ -18,9 +18,13 @@ class DynamicProcessModel(models.Model):
     process_name = models.PositiveSmallIntegerField()
     arrival_time = models.PositiveSmallIntegerField()
     burst_time = models.PositiveSmallIntegerField()
-    quantum = models.PositiveSmallIntegerField(default=5)
 
     def __str__(self):
         return f"process with arrival time:{self.arrival_time} and burst time:{self.burst_time}"
 
+class QuantumModel(models.Model):
+    quantum = models.PositiveSmallIntegerField(default=5)
 
+
+    def __str__(self):
+        return f"quantum is : {self.quantum}"

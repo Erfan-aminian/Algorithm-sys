@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import AlgorithmModel, DynamicProcessModel
+from .models import AlgorithmModel, DynamicProcessModel, QuantumModel
 from django.forms import modelformset_factory
 
 class AlgorithmForm(forms.ModelForm):
@@ -33,3 +33,8 @@ def create_dynamic_process_formset(field_count=0):
         extra=field_count
     )
     return ProcessFormSet
+
+class QuantumForm(forms.ModelForm):
+    class Meta:
+        model = QuantumModel
+        fields = ('quantum',)

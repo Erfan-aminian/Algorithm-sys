@@ -14,6 +14,8 @@ class HomeView(View):
     def get(self, request):
         form = AlgorithmForm()
         return render(request, 'home/home.html', {'form': form})
+
+
     def post(self, request):
         form = AlgorithmForm(request.POST)
         if form.is_valid():
@@ -85,6 +87,12 @@ class DynamicProcessView(View):
         # ریدایرکت یا نمایش موفقیت
 
         return render(request, 'home/dynamic.html', {'formset': formset})
+
+class QuantumView(View):
+    def get(self, request):
+        pass
+    def post(self, request):
+        pass
 
 
 class Fcfsview(View):
