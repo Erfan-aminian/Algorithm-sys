@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.http import JsonResponse
-from .forms import AlgorithmForm,FirstForm,create_dynamic_process_formset,DynamicForm
-from .models import AlgorithmModel, DynamicProcessModel
+from django.views.generic import FormView
+
+from .forms import AlgorithmForm,FirstForm,create_dynamic_process_formset,DynamicForm, QuantumForm
+from .models import AlgorithmModel, DynamicProcessModel, QuantumModel
 from django.contrib import messages
 from .algorithm import SJFAlgorithm, SRTAlgorithm, RRAlgorithm
 
@@ -90,9 +92,16 @@ class DynamicProcessView(View):
 
 class QuantumView(View):
     def get(self, request):
-        pass
+        form = QuantumForm()
+        return render(request, 'home/quantum.html', {'form': form })
+
     def post(self, request):
-        pass
+        QuantumModel.objects.all().delete()
+        form = QuantumForm(request.POST)
+        if form.is_valid():
+            form.save()  # ذخیره فرم در پایگاه داده
+            return redirect('home:rr')  # هدایت به صفحه موفقیت
+        return render(request, 'home/quantum.html', {'form': form})
 
 
 class Fcfsview(View):
@@ -184,12 +193,13 @@ class RoundRobinView(View):
     def get(self, request, *args, **kwargs):
         processes = []
         dynamic_processes = DynamicProcessModel.objects.all()
+        quantum = QuantumModel.objects.all()
 
         if not dynamic_processes.exists():
             return render(request, 'home/rr.html', {'result': [], 'error': 'No processes found in the database.'})
 
         # دریافت Time Quantum از اولین فرآیند
-        time_quantum = dynamic_processes.first().quantum
+        time_quantum = quantum.first().quantum
 
         # جمع‌آوری داده‌های فرآیندها
         for process in dynamic_processes:

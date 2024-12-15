@@ -8,7 +8,7 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/dynamic.css' %}">
+    <link rel="stylesheet" href="{% static 'css/quantum.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -17,22 +17,10 @@
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            {{ formset.management_form }}
-            {% for form in formset %}
-                <div class="process-form">
-                    {{ form.as_p }}
-                </div>
-            {% endfor %}
+            {{ form.as_p }}
         </div>
         <button type="submit" class="btn btn-custom">ارسال</button>
     </form>
-</div>
-<div class="form-container mt-4">
-    <form action="{% url 'home:quantum' %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-custom">ارسال کوانتوم</button>
-    </form>
-
 </div>
 
 <!-- Bootstrap JS and dependencies -->

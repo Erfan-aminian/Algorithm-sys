@@ -1,0 +1,79 @@
+body {
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Vazir', sans-serif; /* فونت فارسی برای زیبایی */
+}
+
+.form-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #495057;
+    text-align: center;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.form-title i {
+    color: #007bff;
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #495057;
+    background-color: #f8f9fa;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    outline: none;
+    background-color: #ffffff;
+}
+
+textarea {
+    resize: none;
+}
+
+.btn-custom {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
