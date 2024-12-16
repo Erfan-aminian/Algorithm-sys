@@ -27,7 +27,7 @@
                 <tbody>
                     {% for process in results %}
                     <tr>
-                        <td>{{ process.name }}</td>
+                        <td>{{ process.process_name }}</td>
                         <td>{{ process.start_time }}</td>
                         <td>{{ process.finish_time }}</td>
                         <td>{{ process.waiting_time }}</td>
@@ -38,7 +38,7 @@
             </table>
         </div>
         <div class="mt-4">
-            <a href="/" class="btn btn-custom">Back to Home</a>
+            <a href="{% url 'home:home' %}" class="btn btn-custom">Back to Home</a>
         </div>
     </div>
 </body>

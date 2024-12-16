@@ -45,8 +45,15 @@
     </div>
 
     <div class="mt-4">
-        <a href="{% url 'home:home ' %}" class="btn btn-custom">Back to Home</a>
+        <a href="{% url 'home:home' %}" class="btn btn-custom">Back to Home</a>
     </div>
+    <div class="form-container mt-4">
+    <form action="{% url 'home:quantum' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-custom">ارسال کوانتوم</button>
+    </form>
+
+</div>
 </div>
 </body>
 </html>

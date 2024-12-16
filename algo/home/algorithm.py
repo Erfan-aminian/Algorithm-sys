@@ -88,7 +88,7 @@ class SJFAlgorithm:
 
                 self.scheduled_processes.append(
                     {
-                        "id": current_process["id"],
+                        "process_name": current_process["process_name"],
                         "start_time": start_time,
                         "finish_time": finish_time,
                         "waiting_time": start_time - current_process["arrival_time"],

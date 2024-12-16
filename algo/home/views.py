@@ -134,7 +134,7 @@ class SjfView(View):
     def get(self, request, *args, **kwargs):
         # دریافت داده‌ها از پایگاه‌داده
         processes = list(
-            DynamicProcessModel.objects.values("id", "arrival_time", "burst_time")
+            DynamicProcessModel.objects.values("process_name", "arrival_time", "burst_time")
         )
 
         # اجرای الگوریتم
