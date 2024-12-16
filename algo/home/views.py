@@ -6,7 +6,7 @@ from django.views.generic import FormView
 from .forms import AlgorithmForm,FirstForm,create_dynamic_process_formset,DynamicForm, QuantumForm
 from .models import AlgorithmModel, DynamicProcessModel, QuantumModel
 from django.contrib import messages
-from .algorithm import SJFAlgorithm, SRTAlgorithm, RRAlgorithm
+from .algorithm import FCFSAlgorithm, SJFAlgorithm, SRTAlgorithm, RRAlgorithm
 
 from django.http import HttpResponse
 # Create your views here.
@@ -23,7 +23,7 @@ class HomeView(View):
         if form.is_valid():
             selected = form.cleaned_data['option']
             if selected == '1':
-                return redirect('home:count')
+                return redirect('home:fcfs')
             elif selected == '2':
                 return redirect('home:rr')
             elif selected == '3':
@@ -105,55 +105,29 @@ class QuantumView(View):
 
 
 class Fcfsview(View):
-    def get(self, request):
-        processes = list(DynamicProcessModel.objects.all().order_by('arrival_time'))
+    def get(self, request, *args, **kwargs):
+        processes = []
 
-        if processes:
-            waiting_times = []
-            turnaround_times = []
+        # دریافت تمام فرآیندها از مدل
+        dynamic_processes = DynamicProcessModel.objects.all()
 
-            current_time = 0
-            total_waiting_time = 0
-            total_turnaround_time = 0
+        if not dynamic_processes.exists():
+            return render(request, 'home/fcfs.html', {'result': [], 'error': 'No processes found in the database.'})
 
-            process_data = []  # این لیست به جای result استفاده می‌شه
+        # جمع‌آوری داده‌های فرآیندها
+        for process in dynamic_processes:
+            processes.append({
+                'process_name': process.process_name,
+                'arrival_time': process.arrival_time,
+                'burst_time': process.burst_time
+            })
 
-            for process in processes:
-                if current_time < process.arrival_time:
-                    current_time = process.arrival_time
-                waiting_time = current_time - process.arrival_time
-                waiting_times.append(waiting_time)
+        # اجرای الگوریتم FCFS
+        fcfs_algo = FCFSAlgorithm(processes)
+        result = fcfs_algo.execute()
 
-                current_time += process.burst_time
-                turnaround_time = current_time - process.arrival_time
-                turnaround_times.append(turnaround_time)
-
-                total_waiting_time += waiting_time
-                total_turnaround_time += turnaround_time
-
-                # اضافه کردن داده‌ها به لیست process_data
-                process_data.append({
-                    'process_name': process.process_name,
-                    'arrival_time': process.arrival_time,
-                    'burst_time': process.burst_time,
-                    'waiting_time': waiting_time,
-                    'turnaround_time': turnaround_time,
-                })
-
-            avg_waiting_time = total_waiting_time / len(processes)
-            avg_turnaround_time = total_turnaround_time / len(processes)
-        else:
-            avg_waiting_time = 0
-            avg_turnaround_time = 0
-            process_data = []
-
-        context = {
-            'process_data': process_data,  # ارسال لیست process_data به قالب
-            'avg_waiting_time': avg_waiting_time,
-            'avg_turnaround_time': avg_turnaround_time
-        }
-
-        return render(request, 'home/fcfs_result.html', context)
+        # ارسال نتایج به قالب
+        return render(request, 'home/fcfs.html', {'result': result})
 
 
 class SjfView(View):

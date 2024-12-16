@@ -17,7 +17,7 @@
             <table class="table table-bordered table-light table-hover">
                 <thead>
                     <tr>
-                        <th>Process ID</th>
+                        <th>Process Name</th>
                         <th>Start Time</th>
                         <th>Finish Time</th>
                         <th>Waiting Time</th>
@@ -27,7 +27,7 @@
                 <tbody>
                     {% for process in results %}
                     <tr>
-                        <td>{{ process.id }}</td>
+                        <td>{{ process.name }}</td>
                         <td>{{ process.start_time }}</td>
                         <td>{{ process.finish_time }}</td>
                         <td>{{ process.waiting_time }}</td>

@@ -1,3 +1,43 @@
+class FCFSAlgorithm:
+    def __init__(self, processes):
+        """
+        :param processes: لیستی از دیکشنری‌های فرآیندها شامل نام، زمان ورود و زمان اجرای هر فرآیند
+        """
+        self.processes = processes
+
+    def execute(self):
+        """
+        اجرای الگوریتم FCFS و بازگشت نتایج
+        :return: لیستی از زمان‌های انتظار، زمان‌های گردش و زمان‌های تکمیل برای هر فرآیند
+        """
+        results = []
+        current_time = 0
+
+        # مرتب‌سازی فرآیندها بر اساس زمان ورود
+        self.processes.sort(key=lambda x: x['arrival_time'])
+
+        for process in self.processes:
+            if current_time < process['arrival_time']:
+                # اگر CPU بیکار باشد، به زمان ورود فرآیند می‌رود
+                current_time = process['arrival_time']
+
+            completion_time = current_time + process['burst_time']
+            turnaround_time = completion_time - process['arrival_time']
+            waiting_time = turnaround_time - process['burst_time']
+
+            results.append({
+                'process_name': process['process_name'],
+                'completion_time': completion_time,
+                'turnaround_time': turnaround_time,
+                'waiting_time': waiting_time
+            })
+
+            # به‌روزرسانی زمان فعلی
+            current_time = completion_time
+
+        return results
+
+
 class SJFAlgorithm:
     """
     Shortest Job First (SJF) Algorithm for scheduling processes.
