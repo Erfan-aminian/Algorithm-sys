@@ -30,7 +30,7 @@ class HomeView(View):
                 return redirect('home:sjf')
             elif selected == '4':
                 return redirect('home:srt')
-            messages.success(request, 'you chioce', 'success')
+            #messages.success(request, 'you chioce', 'success')
             form.save()
         else:
             form = AlgorithmForm()

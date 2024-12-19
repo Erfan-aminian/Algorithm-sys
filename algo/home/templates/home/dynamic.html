@@ -13,7 +13,7 @@
 
 {% block content %}
 <div class="form-container">
-    <h2 class="form-title"><i class="fas fa-check-circle"></i>مقدار براسس ها</h2>
+    <h2 class="form-title"><i class="fas fa-check-circle"></i> مقدار دهی</h2>
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -27,12 +27,12 @@
         <button type="submit" class="btn btn-custom">ارسال</button>
     </form>
 </div>
+
 <div class="form-container mt-4">
     <form action="{% url 'home:quantum' %}" method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-custom">ارسال کوانتوم</button>
     </form>
-
 </div>
 
 <!-- Bootstrap JS and dependencies -->
